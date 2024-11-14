@@ -11,7 +11,7 @@ router.route("/")
 router.route("/favorite")
     .get(books.findAllFavorite);
 
-router.route("/:id")
+router.route("/:masach")
     .get(books.findOne)
     .put(books.update)
     .delete(books.delete);
