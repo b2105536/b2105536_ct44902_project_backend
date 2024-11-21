@@ -3,6 +3,7 @@ const { ObjectId } = require("mongodb");
 class BookService {
     constructor(client) {
         this.Book = client.db().collection("books");
+        this.Publishers = client.db().collection("publishers");
     }
 
     extractBookData(payload) {
@@ -22,8 +23,18 @@ class BookService {
         return book;
     }
 
+    async isPublisherExist(manxb) {
+        const publisher = await this.Publishers.findOne({ MaNXB: manxb });
+        return publisher !== null;
+    }
+
     async create(payload) {
         try {
+            const isPublisherValid = await this.isPublisherExist(payload.MaNXB);
+            if (!isPublisherValid) {
+                throw new Error("Publisher does not exist");
+            }
+
             const book = this.extractBookData(payload);
             const result = await this.Book.findOneAndUpdate(
                 { MaSach: book.MaSach },

@@ -15,6 +15,9 @@ exports.create = async (req, res, next) => {
         const document = await bookService.create(req.body);
         return res.send(document);
     } catch (error) {
+        if (error.message.includes("Publisher does not exist")) {
+            return next(new ApiError(400, "Publisher does not exist"));
+        }
         return next(
             new ApiError(500, "An error occurred while creating the book")
         );
